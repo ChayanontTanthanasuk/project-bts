@@ -1,0 +1,50 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              Int             @id @default(autoincrement())
+  email           String          @unique
+  password        String
+  fullname        String          @default("") 
+  travelHistories TravelHistory[]
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @default(now()) @updatedAt 
+}
+
+
+model Station {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  line      String
+  position  Int
+  fare      Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+  fromTravelHistories TravelHistory[] @relation("FromStation")
+  toTravelHistories   TravelHistory[] @relation("ToStation")
+}
+
+model TravelHistory {
+  id            Int      @id @default(autoincrement())
+  user          User     @relation(fields: [userId], references: [id])
+  userId        Int
+  fromStation   Station  @relation("FromStation", fields: [fromStationId], references: [id])
+  fromStationId Int
+  toStation     Station  @relation("ToStation", fields: [toStationId], references: [id])
+  toStationId   Int
+  price         Int
+  traveledAt    DateTime @default(now())
+}
