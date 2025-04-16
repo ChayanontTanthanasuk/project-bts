@@ -15,11 +15,14 @@ app.use(express.json());
 const userRoutes = require('../routes/userRoutes');
 const travelRoutes = require('../routes/travelRoutes');
 const stationRoutes = require('../routes/stationRoutes');
+const trainRoutes = require('../routes/trainRoutes');
 
 // กำหนด path ให้แต่ละ route
 app.use('/api/auth', userRoutes);    
 app.use('/api', travelRoutes);         
-app.use('/api', stationRoutes);         
+app.use('/api', stationRoutes);    
+
+app.use('/api/bts', trainRoutes); // base route
 
 // เริ่มฟังพอร์ต 5000
 app.listen(5000, () => {
